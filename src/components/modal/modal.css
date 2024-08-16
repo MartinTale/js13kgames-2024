@@ -8,20 +8,21 @@
 
 .modal.active {
 	opacity: 1;
+	z-index: 100;
 }
 
 .modal-overlay {
 	position: absolute;
-	width: 100%;
-	height: 100%;
+	width: 10000%;
+	height: 10000%;
 	background-color: rgba(0, 0, 0, 0.75);
 	z-index: 101;
 }
 
 .modal-container {
 	position: absolute;
-	margin: 32px;
-	padding: 16px 32px;
+	/* margin: 32px; */
+	padding: 16px;
 	z-index: 102;
 	background-color: var(--bg);
 	border: 2px solid var(--color);
@@ -46,6 +47,11 @@
 	align-items: center;
 	flex-direction: column;
 	margin-bottom: 16px;
+}
+
+.modal-container main {
+	font-size: 18px;
+	flex-direction: column;
 }
 
 .modal-container footer {

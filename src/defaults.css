@@ -2,6 +2,8 @@
 	--bg: #03182b;
 	--color: #8be9ff;
 	--shadow: #4f838f;
+	--vw: 1vw;
+	--vh: 1vh;
 }
 
 body,
@@ -11,7 +13,7 @@ body * {
 	justify-content: center;
 	align-items: center;
 	position: relative;
-	font-family: "Comic Sans MS", cursive, sans-serif;
+	font-family: "Comic Sans MS", Times, serif;
 }
 
 html,
@@ -22,6 +24,12 @@ body {
 	height: 100vh;
 	min-height: 100vh;
 	max-height: 100vh;
+	width: calc(var(--vw, 1vw) * 100);
+	min-width: calc(var(--vw, 1vw) * 100);
+	max-width: calc(var(--vw, 1vw) * 100);
+	height: calc(var(--vh, 1vh) * 100);
+	min-height: calc(var(--vh, 1vh) * 100);
+	max-height: calc(var(--vh, 1vh) * 100);
 	margin: 0;
 	padding: 0;
 	overscroll-behavior-y: none;
@@ -32,6 +40,8 @@ body {
 	color: #ccc;
 	font-size: 24px;
 	background: var(--bg);
+	position: fixed;
+	inset: 0;
 }
 
 small {
@@ -42,11 +52,16 @@ small {
 	text-align: right;
 }
 
-h1 {
+h1,
+h2 {
 	margin: 0;
 	font-size: 32px;
 	width: 100%;
 	color: #fff;
+}
+
+h2 {
+	font-size: 24px;
 }
 
 a {
@@ -64,6 +79,8 @@ hr {
 
 p {
 	margin-bottom: 8px;
+	width: 100%;
+	line-height: 1.2;
 }
 
 b {
