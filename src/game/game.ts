@@ -329,9 +329,10 @@ function openLevel(level: number) {
 	// 	icons.push(emojisInCategory.splice(mathRandomInteger(0, emojisInCategory.length - 1), 1)[0]);
 	// }
 
-	const availableSVGs = [...svgs];
+	const allSvgGroups = [...svgs];
 	for (let i = 0; i < 5; i += 1) {
-		const svg = availableSVGs.splice(mathRandomInteger(0, availableSVGs.length - 1), 1)[0];
+		const svgGroup = [...allSvgGroups.splice(mathRandomInteger(0, allSvgGroups.length - 1), 1)[0]];
+		const svg = svgGroup.splice(mathRandomInteger(0, svgGroup.length - 1), 1)[0];
 		const svgEl = getSVGElement(svg);
 		svgEl.dataset.group = i.toString();
 		icons.push(svgEl);
