@@ -117,7 +117,10 @@ function hideTitleScreen() {
 		fadeOut(item.root);
 	});
 	fadeOut(soundToggle.root, { from: { opacity: state.sound.value === true ? 1 : 0.4 } });
-	fadeOut(roundLabel, { from: { opacity: undefined } });
+
+	if (!hasTopSpeeds) {
+		fadeOut(roundLabel);
+	}
 
 	setTimeout(() => {
 		if (hasTopSpeeds) {
