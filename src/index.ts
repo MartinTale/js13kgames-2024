@@ -1,16 +1,12 @@
 import "./reset.css";
 import "./defaults.css";
 import { initMusic } from "./systems/music";
-import { mount, setTextContent } from "./helpers/dom";
+import { mount } from "./helpers/dom";
 import { initState, resetState, state } from "./systems/state";
 import { SVGs } from "./systems/svgs";
-import { abbreviateNumber, mathRandomInteger } from "./helpers/numbers";
 import { initFireflies } from "./components/fireflies/fireflies";
 import { EdgeLinkButton, EdgeButton } from "./components/edge-button/edge-button";
 import { initGame, startGameLoop } from "./game/game";
-import { createButton } from "./components/button/button";
-import { easings, tween } from "./systems/animation";
-import { ProgressBar } from "./components/progress-bar/progress-bar";
 import { colors, setGameColor } from "./helpers/colors";
 import { closeModal, openModal } from "./components/modal/modal";
 import { createScaleableContainer } from "./components/scaleable-container/scaleable-container";
@@ -18,6 +14,8 @@ import { createScaleableContainer } from "./components/scaleable-container/scale
 export let bodyElement: HTMLElement;
 export let gameContainer: HTMLElement;
 
+export let discordButton: EdgeLinkButton;
+export let coffeeButton: EdgeLinkButton;
 export let soundToggle: EdgeButton;
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -32,17 +30,20 @@ window.addEventListener("DOMContentLoaded", () => {
 
 	initMusic();
 
-	new EdgeLinkButton(bodyElement, SVGs.discord, "#5865F2", 8, -8, "https://discord.gg/kPf8XwNuZT");
-	new EdgeLinkButton(
+	discordButton = new EdgeLinkButton(bodyElement, SVGs.discord, "#5865F2", 8, -8, "https://discord.gg/kPf8XwNuZT");
+	coffeeButton = new EdgeLinkButton(
 		bodyElement,
 		SVGs.coffee,
 		"#FBAA19",
 		64,
 		-8,
-		"https://ko-fi.com/martintale?ref=js13kgames-template",
+		"https://ko-fi.com/martintale?ref=js13kgames-template-2024",
 	);
+	discordButton.root.style.opacity = "0";
+	coffeeButton.root.style.opacity = "0";
 
 	soundToggle = new EdgeButton(bodyElement, SVGs.sound, "sound", 8, 8);
+	soundToggle.root.style.opacity = "0";
 
 	if (import.meta.env.MODE === "development") {
 		new EdgeLinkButton(
@@ -79,54 +80,12 @@ window.addEventListener("DOMContentLoaded", () => {
 		);
 	}
 
-	const testButton = createButton(
-		"",
-		() => {
-			state.level.value += 1;
-			tween(testButton, {
-				to: {
-					x: mathRandomInteger(-200, 200),
-					y: mathRandomInteger(-100, 300),
-					rotate: mathRandomInteger(-180, 180),
-					scale: mathRandomInteger(5, 20) / 10,
-					opacity: mathRandomInteger(20, 100) / 100,
-				},
-				duration: 1000,
-				easing: easings.swingTo,
-			});
-		},
-		"primary",
-	);
-
-	mount(gameContainer, testButton);
-
-	const testButton2 = createButton(
-		"",
-		() => {
-			state.level.value += 1;
-		},
-		"primary",
-	);
-
-	mount(gameContainer, testButton2);
-
-	const bar = new ProgressBar(gameContainer, 0, 100, 0);
-	bar.container.style.margin = "10px";
-	bar.container.onclick = () => {
-		bar.setValue(bar.value + 10);
-	};
-
-	state.level.subscribe((level) => {
-		setTextContent(testButton, `Test ${abbreviateNumber(level)}`);
-	});
-
-	state.level.subscribe((level) => {
-		setTextContent(testButton2, `Test ${abbreviateNumber(level * 80)}`);
-	});
-
 	setRealViewportValues();
 
-	initGame();
+	if (state.sound.value != null) {
+		initGame();
+	}
+
 	startGameLoop();
 });
 

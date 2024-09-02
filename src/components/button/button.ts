@@ -14,8 +14,9 @@ export function createButton(
 	content: string | HTMLElement | HTMLElement[],
 	onClickCallback: (e: any) => void,
 	type: ButtonType,
+	addClass?: string,
 ): HTMLElement {
-	const button = el("button." + type, content) as HTMLButtonElement;
+	const button = el("button." + type + (addClass ? "." + addClass : ""), content) as HTMLButtonElement;
 	button.onclick = (e) => {
 		playSound(sounds.tap);
 		onClickCallback(e);

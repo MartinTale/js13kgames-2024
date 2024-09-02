@@ -1,7 +1,7 @@
 import { rng } from "../helpers/numbers";
 import { Signal, createSignal } from "./signals";
 
-const STATE_KEY = "js13kgames-template";
+const STATE_KEY = "js13kgames-template-2024";
 
 export type Path = "sound" | "screen";
 
@@ -9,7 +9,7 @@ export type State = {
 	seed: Signal<number>;
 	lastProcessedAt: Signal<number>;
 	sound: Signal<boolean | null>;
-	level: Signal<number>;
+	topSpeeds: Signal<number[]>;
 };
 
 export const emptyState: State = {
@@ -17,7 +17,7 @@ export const emptyState: State = {
 	// seed: createSignal(Date.now()),
 	lastProcessedAt: createSignal(Date.now()),
 	sound: createSignal(null),
-	level: createSignal(0),
+	topSpeeds: createSignal([]),
 };
 
 export let state: State;
@@ -59,7 +59,7 @@ function loadState() {
 	stateLoaded = true;
 }
 
-function saveState() {
+export function saveState() {
 	if (!stateLoaded) {
 		return;
 	}

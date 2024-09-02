@@ -1,4 +1,4 @@
-# js13kgames-template
+# js13kgames-template-2024
 
 WIP
 
@@ -9,8 +9,8 @@ WIP
 Clone and install dependencies:
 
 ```bash
-git clone git@github.com:MartinTale/js13kgames-template.git
-cd js13kgames-template
+git clone git@github.com:MartinTale/js13kgames-template-2024.git
+cd js13kgames-template-2024
 npm i
 ```
 

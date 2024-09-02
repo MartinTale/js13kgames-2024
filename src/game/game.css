@@ -7,3 +7,161 @@
 .game * {
 	transition: all 0.2s ease-in-out;
 }
+
+.game-title {
+	position: absolute;
+	top: 120px;
+	font-size: 36px;
+	color: var(--color);
+	filter: drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362)
+		drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362);
+	letter-spacing: 1px;
+}
+
+.top-speeds {
+	position: absolute;
+	top: 240px;
+	flex-direction: column;
+}
+
+.top-speeds h2 {
+	font-size: 20px;
+	margin-bottom: 16px;
+}
+
+.top-speeds b {
+	font-size: 16px;
+	color: #aaa;
+}
+
+.top-speeds b:nth-of-type(1) {
+	color: #ffbf00;
+}
+
+.top-speeds b:nth-of-type(2) {
+	color: #dbdbdb;
+}
+
+.top-speeds b:nth-of-type(3) {
+	color: #bb8f4c;
+}
+
+.start-game-button {
+	position: absolute;
+	bottom: 140px;
+}
+
+.game-info {
+	position: absolute;
+	bottom: 12px;
+	margin: 0;
+	font-size: 12px;
+	color: #aaa;
+	opacity: 0;
+}
+
+.game-buttons {
+	position: absolute;
+	bottom: 36px;
+	gap: 10px;
+}
+
+.game-button {
+	opacity: 0;
+	width: 60px;
+	height: 60px;
+	margin: 0;
+	border-width: 2px;
+}
+
+.button-icon {
+	font-size: 42px;
+	/* transform: scale(2); */
+	margin: 0;
+	margin-top: -4px;
+	filter: drop-shadow(0px 0px 1px #000) drop-shadow(0px 0px 1px #000);
+}
+
+.game-icon {
+	position: absolute;
+	font-size: 36px;
+	width: 50px;
+	height: 50px;
+	opacity: 0;
+	filter: drop-shadow(0px 0px 1px #000) drop-shadow(0px 0px 1px #000);
+}
+/*
+.location {
+	position: absolute;
+	width: 50px;
+	height: 50px;
+	background: var(--color);
+	opacity: 0.5;
+} */
+
+.game-time {
+	position: absolute;
+	top: 20px;
+	opacity: 0;
+	font-size: 16px;
+}
+
+.game-button-counter {
+	position: absolute;
+	top: -24px;
+	opacity: 0;
+	font-size: 16px;
+}
+
+.game-button-counter.wrong {
+	color: #f00;
+}
+
+.round-number {
+	font-size: 72px;
+}
+
+.lost-game {
+	position: absolute;
+	opacity: 0;
+	flex-direction: column;
+}
+
+.lost-game h2 {
+	font-size: 48px;
+}
+
+.lost-game b {
+	font-size: 18px;
+	color: #aaa;
+	margin-top: 12px;
+}
+
+.won-game {
+	position: absolute;
+	opacity: 0;
+	flex-direction: column;
+}
+
+.won-game h2 {
+	font-size: 48px;
+	color: var(--color);
+	filter: drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362)
+		drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362);
+	letter-spacing: 1px;
+}
+
+.won-game b {
+	font-size: 18px;
+	color: #fff;
+	margin-top: 12px;
+	margin-bottom: 0;
+}
+
+.round-label {
+	font-size: 14px;
+	position: absolute;
+	bottom: 110px;
+	color: #fff;
+	opacity: 0;
+}

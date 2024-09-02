@@ -1,3 +1,8 @@
+@font-face {
+	font-family: emoji;
+	src: url(//xem.github.io/unicode13/Twemoji.ttf);
+}
+
 :root {
 	--bg: #03182b;
 	--color: #8be9ff;
@@ -103,4 +108,10 @@ div {
 
 svg {
 	filter: drop-shadow(0 0 5px #000);
+}
+
+.emoji {
+	font-family: emoji;
+	text-shadow: none;
+	filter: drop-shadow(0px 0px 2px #000);
 }

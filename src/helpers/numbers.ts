@@ -138,3 +138,17 @@ const mathSymbols = [
 export function getMathSymbolElements() {
 	return mathSymbols.map((symbol) => el("span.math-symbol", symbol));
 }
+
+export function toTime(duration: number) {
+	const seconds = Math.floor(duration / 1000);
+	const minutes = Math.floor(seconds / 60);
+	const hours = Math.floor(minutes / 60);
+
+	if (hours > 0) {
+		return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
+	} else if (minutes > 0) {
+		return `${minutes}m ${seconds % 60}s`;
+	} else {
+		return `${seconds}.${(duration % 1000).toString().padStart(3, "0")}s`;
+	}
+}

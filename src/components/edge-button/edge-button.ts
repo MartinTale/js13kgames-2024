@@ -41,7 +41,15 @@ export class EdgeButton {
 	}
 
 	public renderState = (newState: boolean) => {
-		this.root.classList.toggle("active", newState === true);
+		if (this.path === "sound") {
+			if (newState === true) {
+				this.root.style.opacity = "1";
+			} else {
+				this.root.style.opacity = "0.4";
+			}
+		} else {
+			this.root.classList.toggle("active", newState === true);
+		}
 
 		if (this.path === "sound") {
 			if (zzfxX != null) {

@@ -1,4 +1,5 @@
 import { gameContainer } from "..";
+import { mergeDeep } from "../helpers/objects";
 import { getTransforms, mount } from "../helpers/dom";
 import { mathRandomInteger } from "../helpers/numbers";
 
@@ -383,4 +384,84 @@ export function explode(
 	} else {
 		element.remove();
 	}
+}
+
+export function fadeIn(target: HTMLElement, overrides?: Partial<TweenProperties>) {
+	tween(
+		target,
+		mergeDeep(
+			{
+				from: {
+					opacity: 0,
+				},
+				to: {
+					opacity: 1,
+				},
+				duration: 750,
+				easing: easings.easeFromTo,
+			},
+			overrides,
+		),
+	);
+}
+
+export function fadeOut(target: HTMLElement, overrides?: Partial<TweenProperties>) {
+	tween(
+		target,
+		mergeDeep(
+			{
+				from: {
+					opacity: 1,
+				},
+				to: {
+					opacity: 0,
+				},
+				duration: 500,
+				easing: easings.easeFromTo,
+			},
+			overrides,
+		),
+	);
+}
+
+export function swingUp(target: HTMLElement, overrides?: Partial<TweenProperties>) {
+	tween(
+		target,
+		mergeDeep(
+			{
+				from: {
+					opacity: 0,
+					y: 75,
+				},
+				to: {
+					opacity: 1,
+					y: 0,
+				},
+				duration: 750,
+				easing: easings.swingFromTo,
+			},
+			overrides,
+		),
+	);
+}
+
+export function swingDown(target: HTMLElement, overrides?: Partial<TweenProperties>) {
+	tween(
+		target,
+		mergeDeep(
+			{
+				from: {
+					opacity: 1,
+					y: 0,
+				},
+				to: {
+					opacity: 0,
+					y: -75,
+				},
+				duration: 500,
+				easing: easings.easeFrom,
+			},
+			overrides,
+		),
+	);
 }
