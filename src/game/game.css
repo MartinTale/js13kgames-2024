@@ -72,26 +72,32 @@
 	height: 60px;
 	margin: 0;
 	border-width: 2px;
+	padding: 0;
 }
 
 .button-icon {
 	font-size: 42px;
 	/* transform: scale(2); */
 	margin: 0;
-	margin-top: -4px;
-	filter: drop-shadow(0px 0px 1px #000) drop-shadow(0px 0px 1px #000);
+	filter: drop-shadow(0px 0px 1px #000);
+}
+.button-icon svg {
+	width: 42px;
+	height: 42px;
 }
 
 .game-icon {
 	position: absolute;
 	font-size: 36px;
-	width: 50px;
-	height: 50px;
+	width: 42px;
+	height: 42px;
+	margin-left: 4px;
+	margin-top: 4px;
 	opacity: 0;
-	filter: drop-shadow(0px 0px 1px #000) drop-shadow(0px 0px 1px #000);
+	filter: drop-shadow(0px 0px 1px #000) drop-shadow(0px 0px 1px #000) drop-shadow(0px 0px 1px #000);
 }
-/*
-.location {
+
+/* .location {
 	position: absolute;
 	width: 50px;
 	height: 50px;

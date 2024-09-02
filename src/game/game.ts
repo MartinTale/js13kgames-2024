@@ -4,10 +4,11 @@ import { el, mount, setTextContent } from "../helpers/dom";
 import { mathRandomInteger, toTime } from "../helpers/numbers";
 import { shuffle } from "../helpers/objects";
 import { easings, fadeIn, fadeOut, swingDown, swingUp, tween, tweens } from "../systems/animation";
-import { emojis } from "../systems/emojis";
+// import { emojis } from "../systems/emojis";
 import { playSound, sounds } from "../systems/music";
 import { saveState, state } from "../systems/state";
 import "./game.css";
+import { getSVGElement, svgs } from "./svgs";
 
 const gameTitle = el("h1.game-title", "Game Title");
 const topSpeedTitle = el("h2", "Top Speeds");
@@ -161,7 +162,7 @@ function startRound(level: number) {
 function closeLevel(level: number, won: boolean) {
 	gameIcons.forEach((icon) => {
 		tween(icon, {
-			from: { opacity: 1, scale: 1.5 },
+			from: { opacity: 1, scale: 1.3 },
 			to: { opacity: 0, scale: 0 },
 			duration: 500,
 			easing: easings.swingFrom,
@@ -263,9 +264,16 @@ function showLoseGameScreen() {
 		lostGame,
 		el(
 			"b",
-			["Better luck next time!", "Try again!", "Maybe next time!", "Maths are hard!", "13 is bad!"][
-				mathRandomInteger(0, 4)
-			],
+			[
+				"Better luck next time!",
+				"Try again!",
+				"Maybe next time!",
+				"Maths are hard!",
+				"13 is bad!",
+				"13 is scary!",
+				"Avoid 13!",
+				"Triskaidekaphobia!",
+			][mathRandomInteger(0, 4)],
 		),
 	);
 	fadeOut(timeDisplay);
@@ -306,7 +314,7 @@ function openLevel(level: number) {
 	gameButtons = [];
 	gameIconCounts = [];
 	gameButtonCounters = [];
-	const icons: string[] = [];
+	const icons: HTMLElement[] = [];
 
 	const availableIcons = [0, 1, 2, 3, 4];
 	const wrongIcons = availableIcons.splice(mathRandomInteger(0, availableIcons.length - 1), 1);
@@ -315,9 +323,17 @@ function openLevel(level: number) {
 		wrongIcons.push(availableIcons.splice(mathRandomInteger(0, availableIcons.length - 1), 1)[0]);
 	}
 
-	const emojisInCategory = [...emojis[mathRandomInteger(0, emojis.length - 1)]];
+	// const emojisInCategory = [...emojis[mathRandomInteger(0, emojis.length - 1)]];
+	// for (let i = 0; i < 5; i += 1) {
+	// 	icons.push(emojisInCategory.splice(mathRandomInteger(0, emojisInCategory.length - 1), 1)[0]);
+	// }
+
+	const availableSVGs = [...svgs];
 	for (let i = 0; i < 5; i += 1) {
-		icons.push(emojisInCategory.splice(mathRandomInteger(0, emojisInCategory.length - 1), 1)[0]);
+		const svg = availableSVGs.splice(mathRandomInteger(0, availableSVGs.length - 1), 1)[0];
+		const svgEl = getSVGElement(svg);
+		svgEl.dataset.group = i.toString();
+		icons.push(svgEl);
 	}
 
 	for (let i = 0; i < 5; i += 1) {
@@ -326,7 +342,7 @@ function openLevel(level: number) {
 
 		gameButtons.push(
 			createButton(
-				[el("b.button-icon", icons[i]), gameButtonCount],
+				[el("b.button-icon", icons[i].cloneNode(true) as HTMLElement), gameButtonCount],
 				() => {
 					fadeOut(gameInfo);
 
@@ -360,7 +376,8 @@ function openLevel(level: number) {
 					});
 
 					gameIcons.forEach((icon) => {
-						if (icon.textContent !== icons[i]) {
+						console.log(icon.dataset, icon.dataset.group, i.toString());
+						if (icon.dataset.group !== i.toString()) {
 							setTimeout(
 								() => {
 									tween(icon, {
@@ -382,7 +399,7 @@ function openLevel(level: number) {
 								() => {
 									tween(icon, {
 										to: {
-											scale: 1.5,
+											scale: 1.3,
 										},
 										duration: 500,
 										easing: easings.swingTo,
@@ -420,14 +437,20 @@ function openLevel(level: number) {
 		if (wrongIcons.includes(i)) {
 			gameIconCounts[i] = 13;
 			for (let j = 0; j < 13; j += 1) {
-				gameIcons.push(el("div.game-icon", icons[i]));
+				const iconSVG = icons[i].cloneNode(true) as HTMLElement;
+				iconSVG.dataset.group = i.toString();
+				iconSVG.classList.add("game-icon");
+				gameIcons.push(iconSVG);
 			}
 		} else {
 			const numberOfIcons =
 				itemCountsPerLevel[level - 1][mathRandomInteger(0, itemCountsPerLevel[level - 1].length - 1)];
 			gameIconCounts[i] = numberOfIcons;
 			for (let j = 0; j < numberOfIcons; j += 1) {
-				gameIcons.push(el("div.game-icon", icons[i]));
+				const iconSVG = icons[i].cloneNode(true) as HTMLElement;
+				iconSVG.dataset.group = i.toString();
+				iconSVG.classList.add("game-icon");
+				gameIcons.push(iconSVG);
 			}
 		}
 	}
