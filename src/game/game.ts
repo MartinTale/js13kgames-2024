@@ -58,7 +58,6 @@ function showTitleScreen() {
 	});
 
 	updateTopSpeeds(state.topSpeeds.value);
-
 	swingUp(gameTitle);
 
 	setTimeout(() => {
@@ -91,6 +90,7 @@ function showTitleScreen() {
 				},
 			});
 		});
+
 		fadeIn(soundToggle.root, {
 			to: { opacity: state.sound.value === true ? 1 : 0.4 },
 			onComplete: () => {
@@ -117,6 +117,7 @@ function hideTitleScreen() {
 	[discordButton, coffeeButton].forEach((item) => {
 		fadeOut(item.root);
 	});
+
 	fadeOut(soundToggle.root, { from: { opacity: state.sound.value === true ? 1 : 0.4 } });
 
 	if (!hasTopSpeeds) {
@@ -376,7 +377,6 @@ function openLevel(level: number) {
 					});
 
 					gameIcons.forEach((icon) => {
-						console.log(icon.dataset, icon.dataset.group, i.toString());
 						if (icon.dataset.group !== i.toString()) {
 							setTimeout(
 								() => {

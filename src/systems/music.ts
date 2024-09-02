@@ -80,8 +80,6 @@ export function initMusic() {
 			} else {
 				zzfxX!.suspend();
 			}
-
-			soundToggle.renderState(state.sound.value === true);
 		}
 	};
 }
