@@ -1,6 +1,6 @@
 import { coffeeButton, discordButton, gameContainer, soundToggle } from "..";
 import { createButton } from "../components/button/button";
-import { el, mount, setTextContent } from "../helpers/dom";
+import { el, mount, setTextContent, svgEl } from "../helpers/dom";
 import { mathRandomInteger, toTime } from "../helpers/numbers";
 import { shuffle } from "../helpers/objects";
 import { easings, fadeIn, fadeOut, swingDown, swingUp, tween, tweens } from "../systems/animation";
@@ -21,6 +21,13 @@ const roundPlacement = el("div.round-placement");
 const lostGame = el("div.lost-game");
 const wonGame = el("div.won-game");
 const roundLabel = el("b.round-label", "beat 4 rounds to win");
+const helper = svgEl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <path fill="#f8e71c" d="M256 42c-20.8 0-44.2 5.8-63.6 17.4v-.1l-.6.5a90 90 0 0 0-17 13c-23.7 19.3-47.9 44.6-60.3 72.9 8.3-4.2 16.3-9.5 24.4-14.6-7.3 12.5-12 26-11.7 40.2 5.9-5.8 14.2-15 23.6-23.4 1.8 12.8 5.8 27 12.5 42.7l1.8 4-14.2 24.6 25.1 25 17.4-17.3 25 37.4 7.5-53.5 92.5 51 59.9-59.8c7-28.4 2.5-55.9-8.9-80.3C347.8 75.4 299.6 42 256 42Z"/>
+  <path fill="#f5a623" d="m434.5 64.5-67.3 19.3c7.2 9.3 13.5 19.5 18.5 30.3 5 10.7 8.7 22 11 33.8l58.5-43.2-57.6 2.6 37-42.8Z" class="selected"/>
+  <path fill="#000" d="m295.1 95.5 17.8 3s-1.3 7.6-4.1 16a59.2 59.2 0 0 1-6 12.8 23 23 0 0 1-12 10.2 23 23 0 0 1-15.7-1 59.2 59.2 0 0 1-12.4-6.6c-7.3-5-13-10.4-13-10.4l12.5-13s4.8 4.5 10.6 8.5c3 2 6.1 3.7 8.6 4.7 2.5.9 4 .7 3.8.8-.2 0 1-.7 2.5-3 1.4-2.2 2.9-5.5 4-8.8a94.7 94.7 0 0 0 3.4-13.2Z"/>
+  <path fill="#fff" d="m384 221.7-62.4 62.4-81.5-45-10.5 74.6-39-58.6-14.6 14.6-33.8-33.7-52.4 26.2c8 61.1 20 117.7 44 158.2 24.7 42 60.8 67.6 122.2 67.6 61.4 0 97.5-25.6 122.3-67.6 24.2-41 36.2-98.3 44.2-160.2L384 221.7Z"/>
+</svg>`);
+helper.classList.add("helper");
 
 export function initGame() {
 	startGameButton = createButton(
@@ -42,11 +49,12 @@ export function initGame() {
 	mount(gameContainer, lostGame);
 	mount(gameContainer, wonGame);
 	mount(gameContainer, roundLabel);
+	mount(gameContainer, helper);
 
-	showTitleScreen();
+	showTitleScreen(true);
 }
 
-function showTitleScreen() {
+function showTitleScreen(initial = false) {
 	const hasTopSpeeds = state.topSpeeds.value.length > 0;
 
 	topSpeedContainer.style.opacity = "0";
@@ -59,6 +67,9 @@ function showTitleScreen() {
 
 	updateTopSpeeds(state.topSpeeds.value);
 	swingUp(gameTitle);
+	if (!initial) {
+		fadeOut(helper);
+	}
 
 	setTimeout(() => {
 		if (hasTopSpeeds) {
@@ -124,6 +135,8 @@ function hideTitleScreen() {
 		fadeOut(roundLabel);
 	}
 
+	fadeIn(helper);
+
 	setTimeout(() => {
 		if (hasTopSpeeds) {
 			swingDown(topSpeedContainer);
@@ -160,7 +173,7 @@ function startRound(level: number) {
 	}, 500);
 }
 
-function closeLevel(level: number, won: boolean) {
+function closeLevel(level: number, won: boolean, finishTime: number) {
 	gameIcons.forEach((icon) => {
 		tween(icon, {
 			from: { opacity: 1, scale: 1.3 },
@@ -212,18 +225,18 @@ function closeLevel(level: number, won: boolean) {
 
 		setTimeout(() => {
 			if (level === 4 && won) {
-				showWonGameScreen(5);
+				showWonGameScreen(5, finishTime);
 			} else if (won) {
 				startRound(level + 1);
 			} else {
-				showLoseGameScreen(level);
+				showLoseGameScreen(level, finishTime);
 			}
 		}, 750);
 	}, 500);
 }
 
-function checkAndUpdateNewTopSpeed(level: number, target: HTMLElement) {
-	const currentTime: TopSpeed = { time: Date.now() - startTime, level };
+function checkAndUpdateNewTopSpeed(level: number, target: HTMLElement, finishTime: number) {
+	const currentTime: TopSpeed = { time: finishTime - startTime, level };
 	const speeds = [...state.topSpeeds.value];
 	const lowestSpeed =
 		speeds.length === 0
@@ -285,13 +298,13 @@ function checkAndUpdateNewTopSpeed(level: number, target: HTMLElement) {
 	state.topSpeeds.value = state.topSpeeds.value.slice(0, 5);
 }
 
-function showWonGameScreen(level: number) {
+function showWonGameScreen(level: number, finishTime: number) {
 	playSound(sounds.win);
 
 	wonGame.innerHTML = "";
 	mount(wonGame, el("h2", "You won!"));
 
-	checkAndUpdateNewTopSpeed(level, wonGame);
+	checkAndUpdateNewTopSpeed(level, wonGame, finishTime);
 	saveState();
 
 	fadeOut(timeDisplay);
@@ -311,7 +324,7 @@ function showWonGameScreen(level: number) {
 	});
 }
 
-function showLoseGameScreen(level: number) {
+function showLoseGameScreen(level: number, finishTime: number) {
 	playSound(sounds.loss);
 	lostGame.innerHTML = "";
 	mount(lostGame, el("h2", "Game Over!"));
@@ -332,7 +345,7 @@ function showLoseGameScreen(level: number) {
 		),
 	);
 
-	checkAndUpdateNewTopSpeed(level, lostGame);
+	checkAndUpdateNewTopSpeed(level, lostGame, finishTime);
 	saveState();
 
 	fadeOut(timeDisplay);
@@ -363,9 +376,21 @@ let gameButtonCounters: HTMLElement[] = [];
 let gameIcons: HTMLElement[] = [];
 let gameIconCounts: number[] = [];
 let startTime = Date.now();
+let endTime: number | null = null;
+
+let hintElement: HTMLElement;
+let hintTimeout: number | null = null;
 
 function openLevel(level: number) {
+	if (hintElement) {
+		hintElement.remove();
+	}
+	if (hintTimeout !== null) {
+		clearTimeout(hintTimeout);
+	}
+
 	if (level === 1) {
+		endTime = null;
 		startTime = Date.now();
 	}
 
@@ -396,6 +421,18 @@ function openLevel(level: number) {
 		icons.push(svgEl);
 	}
 
+	hintElement = el("div.hint", icons[mathRandomInteger(0, icons.length - 1)].cloneNode(true) as HTMLElement);
+	mount(gameContainer, hintElement);
+
+	hintTimeout = setTimeout(
+		() => {
+			if (hintElement) {
+				hintElement.classList.toggle("active", true);
+			}
+		},
+		mathRandomInteger(5000, 10000),
+	);
+
 	for (let i = 0; i < 5; i += 1) {
 		const gameButtonCount: HTMLElement = el("b.game-button-counter", "0");
 		gameButtonCounters.push(gameButtonCount);
@@ -404,6 +441,18 @@ function openLevel(level: number) {
 			createButton(
 				[el("b.button-icon", icons[i].cloneNode(true) as HTMLElement), gameButtonCount],
 				() => {
+					const finishTime = Date.now();
+					if (wrongIcons.includes(i) || level === 4) {
+						endTime = finishTime;
+					}
+
+					if (hintElement) {
+						hintElement.classList.toggle("active", false);
+					}
+					if (hintTimeout !== null) {
+						clearTimeout(hintTimeout);
+					}
+
 					fadeOut(gameInfo);
 
 					gameButtons.forEach((button, index) => {
@@ -483,7 +532,7 @@ function openLevel(level: number) {
 					});
 
 					setTimeout(() => {
-						closeLevel(level, wrongIcons.includes(i) === false);
+						closeLevel(level, wrongIcons.includes(i) === false, finishTime);
 					}, 1500);
 				},
 				"primary",
@@ -629,7 +678,7 @@ function processGameState() {
 	// console.log(secondsPassed);
 
 	// state.level.value += secondsPassed;
-	setTextContent(timeDisplay, toTime(newProcessingTime - startTime));
+	setTextContent(timeDisplay, toTime((endTime ?? newProcessingTime) - startTime));
 
 	state.lastProcessedAt.value = newProcessingTime;
 	requestAnimationFrame(processGameState);

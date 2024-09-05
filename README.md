@@ -2,6 +2,10 @@
 
 Game where you pick an item that doesn't have 13 of it on the screen as fast as possible to get high score!
 
+## OP Guild Challenge
+
+NPC chick at the bottom left gives a hint to user to confuse them as it's not always correct.
+
 ## Usage
 
 ### Install
