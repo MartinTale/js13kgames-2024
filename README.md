@@ -1,6 +1,6 @@
-# js13kgames-template-2024
+# not 13
 
-WIP
+Game where you pick an item that doesn't have 13 of it on the screen as fast as possible to get high score!
 
 ## Usage
 
@@ -9,8 +9,8 @@ WIP
 Clone and install dependencies:
 
 ```bash
-git clone git@github.com:MartinTale/js13kgames-template-2024.git
-cd js13kgames-template-2024
+git clone git@github.com:MartinTale/not-13.git
+cd not-13
 npm i
 ```
 
@@ -32,6 +32,13 @@ Create a final production build:
 npm run build
 ```
 
+## Credits
+
+Everything (almost), including art, design, music, sound, and game was created by me - [Martin Tale](https://martintale.com/)
+
+-   Social and GUI icons from respective platforms and https://iconmonstr.com/
+-   Various game icons from https://game-icons.net/
+
 ## Acknowledgements
 
 [Frank Force](https://twitter.com/KilledByAPixel) for [ZzFX](https://github.com/KilledByAPixel/ZzFX)
@@ -43,7 +50,5 @@ npm run build
 [Rob Louie](https://github.com/roblouie) for Roadroller configuration recommendations
 
 [Salvatore Previti](https://github.com/SalvatorePreviti) for Terser configuration recommendations
-
-Graphics: [Micro Roguelike by Kenney](https://www.kenney.nl/assets/micro-roguelike)
 
 [Andrzej Mazur](https://end3r.com/) for organizing js13k

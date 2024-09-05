@@ -6,11 +6,11 @@ import { shuffle } from "../helpers/objects";
 import { easings, fadeIn, fadeOut, swingDown, swingUp, tween, tweens } from "../systems/animation";
 // import { emojis } from "../systems/emojis";
 import { playSound, sounds } from "../systems/music";
-import { saveState, state } from "../systems/state";
+import { TopSpeed, saveState, state } from "../systems/state";
 import "./game.css";
 import { getSVGElement, svgs } from "./svgs";
 
-const gameTitle = el("h1.game-title", "Game Title");
+const gameTitle = el("h1.game-title", "not 13");
 const topSpeedTitle = el("h2", "Top Speeds");
 const topSpeedContainer = el("div.top-speeds");
 let startGameButton;
@@ -212,32 +212,86 @@ function closeLevel(level: number, won: boolean) {
 
 		setTimeout(() => {
 			if (level === 4 && won) {
-				showWonGameScreen();
+				showWonGameScreen(5);
 			} else if (won) {
 				startRound(level + 1);
 			} else {
-				showLoseGameScreen();
+				showLoseGameScreen(level);
 			}
 		}, 750);
 	}, 500);
 }
 
-function showWonGameScreen() {
+function checkAndUpdateNewTopSpeed(level: number, target: HTMLElement) {
+	const currentTime: TopSpeed = { time: Date.now() - startTime, level };
+	const speeds = [...state.topSpeeds.value];
+	const lowestSpeed =
+		speeds.length === 0
+			? { time: 31536000000, level: 0 }
+			: [...state.topSpeeds.value].reduce((accumulator, currentValue) => {
+					if (accumulator.level < currentValue.level) {
+						return { ...accumulator };
+					}
+
+					if (currentValue.level < accumulator.level) {
+						return { ...currentValue };
+					}
+
+					if (accumulator.time < currentValue.time) {
+						return { ...currentValue };
+					}
+
+					if (currentValue.time < accumulator.time) {
+						return { ...accumulator };
+					}
+
+					return { ...accumulator };
+			  });
+
+	if (
+		level === 4 &&
+		(lowestSpeed.level < currentTime.level ||
+			(lowestSpeed.level === currentTime.level && lowestSpeed.time > currentTime.time))
+	) {
+		mount(target, el("b", "New top speed!"));
+	}
+	if (level === 5) {
+		mount(target, el("b", toTime(currentTime.time)));
+	} else {
+		mount(target, el("b", toTime(currentTime.time) + " + " + "💩".repeat(5 - level)));
+	}
+
+	state.topSpeeds.value = [...state.topSpeeds.value, currentTime];
+	state.topSpeeds.value.sort((a, b) => {
+		if (a.level > b.level) {
+			return -1;
+		}
+
+		if (a.level < b.level) {
+			return 1;
+		}
+
+		if (a.time < b.time) {
+			return -1;
+		}
+
+		if (a.time > b.time) {
+			return 1;
+		}
+
+		return 0;
+	});
+
+	state.topSpeeds.value = state.topSpeeds.value.slice(0, 5);
+}
+
+function showWonGameScreen(level: number) {
 	playSound(sounds.win);
 
 	wonGame.innerHTML = "";
 	mount(wonGame, el("h2", "You won!"));
 
-	const currentTime = Date.now() - startTime;
-	const lowestTime = state.topSpeeds.value.length > 0 ? Math.min(...state.topSpeeds.value) : 31536000000;
-	if (lowestTime > currentTime) {
-		mount(wonGame, el("b", "New top speed!"));
-	}
-	mount(wonGame, el("b", toTime(currentTime)));
-	state.topSpeeds.value = [...state.topSpeeds.value, currentTime];
-	state.topSpeeds.value.sort((a, b) => a - b);
-	state.topSpeeds.value = state.topSpeeds.value.slice(0, 5);
-
+	checkAndUpdateNewTopSpeed(level, wonGame);
 	saveState();
 
 	fadeOut(timeDisplay);
@@ -257,7 +311,7 @@ function showWonGameScreen() {
 	});
 }
 
-function showLoseGameScreen() {
+function showLoseGameScreen(level: number) {
 	playSound(sounds.loss);
 	lostGame.innerHTML = "";
 	mount(lostGame, el("h2", "Game Over!"));
@@ -277,6 +331,10 @@ function showLoseGameScreen() {
 			][mathRandomInteger(0, 4)],
 		),
 	);
+
+	checkAndUpdateNewTopSpeed(level, lostGame);
+	saveState();
+
 	fadeOut(timeDisplay);
 	swingUp(lostGame, {
 		onComplete: () => {
@@ -530,7 +588,7 @@ function openLevel(level: number) {
 	}, 300);
 }
 
-function updateTopSpeeds(topSpeeds: number[]) {
+function updateTopSpeeds(topSpeeds: TopSpeed[]) {
 	topSpeedContainer.innerHTML = "";
 	mount(topSpeedContainer, topSpeedTitle);
 
@@ -539,7 +597,11 @@ function updateTopSpeeds(topSpeeds: number[]) {
 
 		let topSpeedElement = el("b");
 		if (topSpeed != null) {
-			topSpeedElement = el("b", toTime(topSpeed));
+			if (topSpeed.level === 5) {
+				topSpeedElement = el("b", toTime(topSpeed.time));
+			} else {
+				topSpeedElement = el("b", toTime(topSpeed.time) + " + " + "💩".repeat(5 - topSpeed.level));
+			}
 		}
 
 		mount(topSpeedContainer, topSpeedElement);

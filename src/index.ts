@@ -37,7 +37,7 @@ window.addEventListener("DOMContentLoaded", () => {
 		"#FBAA19",
 		64,
 		-8,
-		"https://ko-fi.com/martintale?ref=js13kgames-template-2024",
+		"https://ko-fi.com/martintale?ref=not-13",
 	);
 	discordButton.root.style.opacity = "0";
 	coffeeButton.root.style.opacity = "0";

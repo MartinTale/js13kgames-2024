@@ -1,15 +1,16 @@
 import { rng } from "../helpers/numbers";
 import { Signal, createSignal } from "./signals";
 
-const STATE_KEY = "js13kgames-template-2024";
+const STATE_KEY = "not-13";
 
 export type Path = "sound" | "screen";
+export type TopSpeed = { time: number; level: number };
 
 export type State = {
 	seed: Signal<number>;
 	lastProcessedAt: Signal<number>;
 	sound: Signal<boolean | null>;
-	topSpeeds: Signal<number[]>;
+	topSpeeds: Signal<TopSpeed[]>;
 };
 
 export const emptyState: State = {
