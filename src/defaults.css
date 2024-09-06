@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Grandstander&display=swap");
+
 @font-face {
 	font-family: emoji;
 	src: url(//xem.github.io/unicode13/Twemoji.ttf);
@@ -18,7 +20,10 @@ body * {
 	justify-content: center;
 	align-items: center;
 	position: relative;
-	font-family: "Comic Sans MS", Times, serif;
+	font-family: "Grandstander", cursive;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
 }
 
 html,
