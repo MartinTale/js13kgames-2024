@@ -7,7 +7,7 @@ import { bodyElement, gameContainer, soundToggle } from "..";
 import { openModal } from "../components/modal/modal";
 import { initGame } from "../game/game";
 
-const musicVolume = 0.5;
+const musicVolume = 1;
 
 let musicStarted = false;
 

@@ -51,10 +51,10 @@ export function initGame() {
 	mount(gameContainer, roundLabel);
 	mount(gameContainer, helper);
 
-	showTitleScreen(true);
+	showTitleScreen();
 }
 
-function showTitleScreen(initial = false) {
+function showTitleScreen() {
 	const hasTopSpeeds = state.topSpeeds.value.length > 0;
 
 	topSpeedContainer.style.opacity = "0";
@@ -67,9 +67,6 @@ function showTitleScreen(initial = false) {
 
 	updateTopSpeeds(state.topSpeeds.value);
 	swingUp(gameTitle);
-	if (!initial) {
-		fadeOut(helper);
-	}
 
 	setTimeout(() => {
 		if (hasTopSpeeds) {
@@ -134,8 +131,6 @@ function hideTitleScreen() {
 	if (!hasTopSpeeds) {
 		fadeOut(roundLabel);
 	}
-
-	fadeIn(helper);
 
 	setTimeout(() => {
 		if (hasTopSpeeds) {
@@ -308,6 +303,7 @@ function showWonGameScreen(level: number, finishTime: number) {
 	saveState();
 
 	fadeOut(timeDisplay);
+	fadeOut(helper);
 
 	swingUp(wonGame, {
 		onComplete: () => {
@@ -349,6 +345,7 @@ function showLoseGameScreen(level: number, finishTime: number) {
 	saveState();
 
 	fadeOut(timeDisplay);
+	fadeOut(helper);
 	swingUp(lostGame, {
 		onComplete: () => {
 			setTimeout(() => {
@@ -392,6 +389,8 @@ function openLevel(level: number) {
 	if (level === 1) {
 		endTime = null;
 		startTime = Date.now();
+
+		fadeIn(helper);
 	}
 
 	gameIcons = [];
@@ -430,7 +429,7 @@ function openLevel(level: number) {
 				hintElement.classList.toggle("active", true);
 			}
 		},
-		mathRandomInteger(5000, 10000),
+		mathRandomInteger(3000, 6000),
 	);
 
 	for (let i = 0; i < 5; i += 1) {
@@ -571,12 +570,15 @@ function openLevel(level: number) {
 			availableLocations.push([i * 55 + 20, j * 55 + 50]);
 		}
 	}
+	availableLocations.splice(11, 1);
+	availableLocations.splice(0, 1);
 	shuffle(availableLocations);
 
 	// for (let i = 0; i < availableLocations.length; i += 1) {
 	// 	const location = el("div.location");
 	// 	location.style.left = `${availableLocations[i][0]}px`;
 	// 	location.style.top = `${availableLocations[i][1]}px`;
+
 	// 	mount(gameContainer, location);
 	// }
 
