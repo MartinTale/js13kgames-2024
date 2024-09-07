@@ -430,7 +430,7 @@ function openLevel(level: number) {
 				hintElement.classList.toggle("active", true);
 			}
 		},
-		mathRandomInteger(5000, 10000),
+		mathRandomInteger(3000, 6000),
 	);
 
 	for (let i = 0; i < 5; i += 1) {
