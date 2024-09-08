@@ -4,7 +4,7 @@ Game where you pick an item that doesn't have 13 of it on the screen as fast as 
 
 ## Avalanche & Thirdweb Challenge
 
-Implemented game themes using Thirdweb Typescript SDK that gets NFTs that determine look, feel and colors of the game.
+Implemented game themes using Thirdweb Typescript SDK that gets NFTs from Avalanche blockchain that determine look, feel and colors of the game.
 
 ## OP Guild Challenge
 
@@ -13,7 +13,7 @@ Implemented game themes using Thirdweb Typescript SDK that gets NFTs that determ
 
 ## Arcadia Challenge
 
-Published the game on Arcadia platform - https://arcadia.fun/games/2ce9da72-386a-49d1-a06c-fc729c45fed8/
+Published the game on Arcadia platform - [https://arcadia.fun/games/2ce9da72-386a-49d1-a06c-fc729c45fed8/](https://arcadia.fun/games/2ce9da72-386a-49d1-a06c-fc729c45fed8/)
 
 ## Usage
 
