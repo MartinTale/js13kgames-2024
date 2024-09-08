@@ -39,13 +39,13 @@ let web3Loaded = false;
 async function loadThirdWeb() {
 	// @ts-ignore
 	// @vite-ignore
-	const ThirdWeb = await import("https://esm.sh/thirdweb@5.50.0");
+	const ThirdWeb = await import(new URL("https://esm.sh/thirdweb@5.50.0"));
 	// @ts-ignore
 	// @vite-ignore
-	const chains = await import("https://esm.sh/thirdweb@5.50.0/chains");
+	const chains = await import(new URL("https://esm.sh/thirdweb@5.50.0/chains"));
 	// @ts-ignore
 	// @vite-ignore
-	const erc721 = await import("https://esm.sh/thirdweb@5.50.0/extensions/erc721");
+	const erc721 = await import(new URL("https://esm.sh/thirdweb@5.50.0/extensions/erc721"));
 
 	const client = ThirdWeb.createThirdwebClient({
 		secretKey: THIRDWEB_SECRET_KEY,
@@ -102,7 +102,6 @@ async function loadThirdWeb() {
 				contract,
 				tokenId: mathRandomInteger(nftSource.from + 1, nftSource.from + 500),
 			});
-			console.log(nft);
 			const img = el("img.nft") as HTMLImageElement;
 			img.crossOrigin = "anonymous";
 			img.src = nft.metadata.image;
