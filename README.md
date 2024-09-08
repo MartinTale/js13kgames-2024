@@ -13,7 +13,7 @@ Implemented game themes using Thirdweb Typescript SDK that gets NFTs that determ
 
 ## Arcadia Challenge
 
-Published the game on https://arcadia.fun/
+Published the game on Arcadia platform - https://arcadia.fun/games/2ce9da72-386a-49d1-a06c-fc729c45fed8/
 
 ## Usage
 
