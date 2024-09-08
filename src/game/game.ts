@@ -1,5 +1,6 @@
 import { coffeeButton, discordButton, gameContainer, soundToggle } from "..";
 import { createButton } from "../components/button/button";
+import { getAverageRGB, rgbToHex, setGameColor } from "../helpers/colors";
 import { el, mount, setTextContent, svgEl } from "../helpers/dom";
 import { mathRandomInteger, toTime } from "../helpers/numbers";
 import { shuffle } from "../helpers/objects";
@@ -14,6 +15,7 @@ const gameTitle = el("h1.game-title", "not 13");
 const topSpeedTitle = el("h2", "Top Speeds");
 const topSpeedContainer = el("div.top-speeds");
 let startGameButton;
+let loadThirdWebButton;
 const gameButtonContainer = el("div.game-buttons");
 const gameInfo = el("b.game-info", "Avoid items that have 13 of them!");
 const timeDisplay = el("b.game-time");
@@ -29,6 +31,136 @@ const helper = svgEl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 5
 </svg>`);
 helper.classList.add("helper");
 
+const THIRDWEB_SECRET_KEY = "K3Wqnz-USnz6BccPSaB4WGZVQ5lccV4Jbt0wJ8tjoGbqlWh7XbMvo37o2TLVyGgsqHZRMOLIA9ZqxN1laIeCpg";
+const themeSelector = el("div.theme-selector");
+
+let web3Loaded = false;
+
+async function loadThirdWeb() {
+	// @ts-ignore
+	// @vite-ignore
+	const ThirdWeb = await import("https://esm.sh/thirdweb@5.50.0");
+	// @ts-ignore
+	// @vite-ignore
+	const chains = await import("https://esm.sh/thirdweb@5.50.0/chains");
+	// @ts-ignore
+	// @vite-ignore
+	const erc721 = await import("https://esm.sh/thirdweb@5.50.0/extensions/erc721");
+
+	const client = ThirdWeb.createThirdwebClient({
+		secretKey: THIRDWEB_SECRET_KEY,
+	});
+
+	const nftSources: {
+		chain: any;
+		address: string;
+		from: number;
+		type: string;
+	}[] = [
+		{ chain: chains.avalanche, address: "0x76dAAaf7711f0Dc2a34BCA5e13796B7c5D862B53", from: 1, type: "hatchy" },
+		// { chain: chains.avalanche, address: "0xCf91B99548b1C17dD1095c0680E20de380635e20", from: 1, type: "chikn" },
+		// { chain: chains.ethereum, address: "0xc3c8a1e1ce5386258176400541922c414e1b35fd", from: 10, type: "arcadian" },
+	];
+
+	let loading = 5;
+	const images: HTMLImageElement[] = [];
+
+	function showThemes() {
+		if (loading > 0) return;
+
+		fadeOut(loadThirdWebButton);
+		loadThirdWebButton.style.pointerEvents = "none";
+		swingUp(themeSelector, {
+			onComplete: () => {
+				themeSelector.style.pointerEvents = "auto";
+			},
+		});
+		web3Loaded = true;
+	}
+
+	for (let i = 0; i < nftSources.length; i++) {
+		const nftSource = nftSources[i];
+
+		const contract = ThirdWeb.getContract({
+			client,
+			address: nftSource.address,
+			chain: nftSource.chain,
+		});
+
+		// const nfts = await erc721.getNFTs({
+		// 	contract,
+		// 	start: nftSource.from,
+		// 	count: 5,
+		// });
+
+		const imageContainer = el("div.image-container");
+		mount(themeSelector, el("b", "Pick a card theme!"));
+		mount(themeSelector, imageContainer);
+
+		for (let j = 0; j < 5; j++) {
+			const nft = await erc721.getNFT({
+				contract,
+				tokenId: mathRandomInteger(nftSource.from + 1, nftSource.from + 500),
+			});
+			console.log(nft);
+			const img = el("img.nft") as HTMLImageElement;
+			img.crossOrigin = "anonymous";
+			img.src = nft.metadata.image;
+			// img.style.top = `${mathRandomInteger(0, gameContainer.clientHeight) - 25}px`;
+			// img.style.left = `${mathRandomInteger(0, gameContainer.clientWidth) - 25}px`;
+			img.classList.toggle(nftSource.type, true);
+			img.onabort = () => {
+				loading -= 1;
+				showThemes();
+			};
+			img.onerror = () => {
+				loading -= 1;
+				showThemes();
+			};
+			img.onload = () => {
+				loading -= 1;
+				showThemes();
+			};
+
+			img.onclick = () => {
+				const newColor = getAverageRGB(img);
+				setGameColor(rgbToHex(newColor.r, newColor.g, newColor.b), [0.35, 1.8, 1.2]);
+				images.forEach((image) => {
+					image.classList.toggle("active", false);
+				});
+				img.classList.toggle("active", true);
+				playSound(sounds.tap);
+			};
+			mount(imageContainer, img);
+			images.push(img);
+		}
+	}
+
+	// const chain = chains.avalanche;
+	// const address = "0xCf91B99548b1C17dD1095c0680E20de380635e20";
+
+	// const contract = ThirdWeb.getContract({
+	// 	client,
+	// 	address,
+	// 	chain,
+	// });
+
+	// const nfts = await erc721.getNFTs({
+	// 	contract,
+	// 	count: 5,
+	// });
+
+	// for (let i = 0; i < nfts.length; i++) {
+	// 	const img = el("img.nft") as HTMLImageElement;
+	// 	img.src = nfts[i].metadata.image;
+	// 	img.style.top = `${mathRandomInteger(0, gameContainer.clientHeight) - 25}px`;
+	// 	img.style.left = `${mathRandomInteger(0, gameContainer.clientWidth) - 25}px`;
+	// 	mount(gameContainer, img);
+	// }
+
+	// tokenURI += nftData.tokenURI;
+}
+
 export function initGame() {
 	startGameButton = createButton(
 		"Start Game",
@@ -39,9 +171,20 @@ export function initGame() {
 		"start-game-button",
 	);
 
+	loadThirdWebButton = createButton(
+		"Load Avalanche / Thirdweb",
+		() => {
+			loadThirdWeb();
+			setTextContent(loadThirdWebButton, "Loading...");
+		},
+		"normal",
+		"load-web3-button",
+	);
+
 	mount(gameContainer, gameTitle);
 	mount(gameContainer, topSpeedContainer);
 	mount(gameContainer, startGameButton);
+	mount(gameContainer, loadThirdWebButton);
 	mount(gameContainer, gameButtonContainer);
 	mount(gameContainer, gameInfo);
 	mount(gameContainer, timeDisplay);
@@ -50,6 +193,7 @@ export function initGame() {
 	mount(gameContainer, wonGame);
 	mount(gameContainer, roundLabel);
 	mount(gameContainer, helper);
+	mount(gameContainer, themeSelector);
 
 	showTitleScreen();
 }
@@ -60,6 +204,10 @@ function showTitleScreen() {
 	topSpeedContainer.style.opacity = "0";
 	startGameButton.style.opacity = "0";
 	startGameButton.style.pointerEvents = "all";
+	loadThirdWebButton.style.opacity = "0";
+	if (!web3Loaded) {
+		loadThirdWebButton.style.pointerEvents = "all";
+	}
 	[discordButton, coffeeButton, soundToggle].forEach((item) => {
 		item.root.style.opacity = "0";
 		item.root.style.pointerEvents = "all";
@@ -68,9 +216,23 @@ function showTitleScreen() {
 	updateTopSpeeds(state.topSpeeds.value);
 	swingUp(gameTitle);
 
+	if (web3Loaded) {
+		swingUp(themeSelector, {
+			onComplete: () => {
+				themeSelector.style.pointerEvents = "auto";
+			},
+		});
+	}
+
 	setTimeout(() => {
 		if (hasTopSpeeds) {
 			swingUp(topSpeedContainer);
+		} else if (!web3Loaded) {
+			swingUp(loadThirdWebButton, {
+				onComplete: () => {
+					loadThirdWebButton.style.transform = "";
+				},
+			});
 		} else {
 			swingUp(startGameButton, {
 				onComplete: () => {
@@ -82,6 +244,20 @@ function showTitleScreen() {
 
 	setTimeout(() => {
 		if (hasTopSpeeds) {
+			if (!web3Loaded) {
+				swingUp(loadThirdWebButton, {
+					onComplete: () => {
+						loadThirdWebButton.style.transform = "";
+					},
+				});
+			} else {
+				swingUp(startGameButton, {
+					onComplete: () => {
+						startGameButton.style.transform = "";
+					},
+				});
+			}
+		} else {
 			swingUp(startGameButton, {
 				onComplete: () => {
 					startGameButton.style.transform = "";
@@ -89,6 +265,15 @@ function showTitleScreen() {
 			});
 		}
 	}, 500);
+	setTimeout(() => {
+		if (hasTopSpeeds && !web3Loaded) {
+			swingUp(startGameButton, {
+				onComplete: () => {
+					startGameButton.style.transform = "";
+				},
+			});
+		}
+	}, 750);
 
 	setTimeout(() => {
 		[discordButton, coffeeButton].forEach((item) => {
@@ -116,11 +301,17 @@ function hideTitleScreen() {
 	const hasTopSpeeds = state.topSpeeds.value.length > 0;
 
 	startGameButton.style.pointerEvents = "none";
+	loadThirdWebButton.style.pointerEvents = "none";
 	[discordButton, coffeeButton, soundToggle].forEach((item) => {
 		item.root.style.pointerEvents = "none";
 	});
 
 	swingDown(startGameButton);
+	if (!web3Loaded) {
+		swingDown(loadThirdWebButton);
+	}
+	swingDown(themeSelector);
+	themeSelector.style.pointerEvents = "none";
 
 	[discordButton, coffeeButton].forEach((item) => {
 		fadeOut(item.root);

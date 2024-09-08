@@ -24,32 +24,32 @@ export const colors = ["#2C82C9", "#9365B8", "#FAC51C", "#E25041", "#D1D5D8"];
 // 	}
 // }, 100);
 
-export function setGameColor(newHexColor: string) {
+export function setGameColor(newHexColor: string, modifiers = [0.25, 1.5, 1.2]) {
 	const rgbColor = hexToRgb(newHexColor);
 
 	const bg =
 		"rgb(" +
-		Math.max(0, rgbColor.r * 0.25) +
+		Math.max(0, rgbColor.r * modifiers[0]) +
 		"," +
-		Math.max(0, rgbColor.g * 0.25) +
+		Math.max(0, rgbColor.g * modifiers[0]) +
 		"," +
-		Math.max(0, rgbColor.b * 0.25) +
+		Math.max(0, rgbColor.b * modifiers[0]) +
 		")";
 	const color =
 		"rgb(" +
-		Math.min(255, rgbColor.r * 1.5) +
+		Math.min(255, rgbColor.r * modifiers[1]) +
 		"," +
-		Math.min(255, rgbColor.g * 1.5) +
+		Math.min(255, rgbColor.g * modifiers[1]) +
 		"," +
-		Math.min(255, rgbColor.b * 1.5) +
+		Math.min(255, rgbColor.b * modifiers[1]) +
 		")";
 	const shadow =
 		"rgb(" +
-		Math.min(255, rgbColor.r * 1.2) +
+		Math.min(255, rgbColor.r * modifiers[2]) +
 		"," +
-		Math.min(255, rgbColor.g * 1.2) +
+		Math.min(255, rgbColor.g * modifiers[2]) +
 		"," +
-		Math.min(255, rgbColor.b * 1.2) +
+		Math.min(255, rgbColor.b * modifiers[2]) +
 		")";
 
 	document.documentElement.style.setProperty("--bg", bg);
@@ -91,4 +91,49 @@ export function getColorFromRange(first: RGB, second: RGB, percentage: number) {
 		result[key] = start - offset;
 	});
 	return result;
+}
+
+export function getAverageRGB(imgEl: HTMLImageElement) {
+	var blockSize = 5, // only visit every 5 pixels
+		defaultRGB = { r: 0, g: 0, b: 0 }, // for non-supporting envs
+		canvas = document.createElement("canvas"),
+		context = canvas.getContext && canvas.getContext("2d"),
+		data,
+		width,
+		height,
+		i = -4,
+		length,
+		rgb = { r: 0, g: 0, b: 0 },
+		count = 0;
+
+	if (!context) {
+		return defaultRGB;
+	}
+
+	height = canvas.height = imgEl.naturalHeight || imgEl.offsetHeight || imgEl.height;
+	width = canvas.width = imgEl.naturalWidth || imgEl.offsetWidth || imgEl.width;
+	context.drawImage(imgEl, 0, 0);
+
+	try {
+		data = context.getImageData(0, 0, width, height);
+	} catch (e) {
+		/* security error, img on diff domain */
+		return defaultRGB;
+	}
+
+	length = data.data.length;
+
+	while ((i += blockSize * 4) < length) {
+		++count;
+		rgb.r += data.data[i];
+		rgb.g += data.data[i + 1];
+		rgb.b += data.data[i + 2];
+	}
+
+	// ~~ used to floor values
+	rgb.r = ~~(rgb.r / count);
+	rgb.g = ~~(rgb.g / count);
+	rgb.b = ~~(rgb.b / count);
+
+	return rgb;
 }

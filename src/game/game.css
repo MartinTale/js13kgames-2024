@@ -10,17 +10,17 @@
 
 .game-title {
 	position: absolute;
-	top: 120px;
+	top: 100px;
 	font-size: 36px;
 	color: var(--color);
-	filter: drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362)
-		drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362);
+	filter: drop-shadow(0 0 1px var(--shadow)) drop-shadow(0 0 1px var(--shadow)) drop-shadow(0 0 1px var(--shadow))
+		drop-shadow(0 0 1px var(--shadow)) drop-shadow(0 0 1px var(--shadow)) drop-shadow(0 0 1px var(--shadow));
 	letter-spacing: 1px;
 }
 
 .top-speeds {
 	position: absolute;
-	top: 240px;
+	top: 200px;
 	flex-direction: column;
 }
 
@@ -48,7 +48,12 @@
 
 .start-game-button {
 	position: absolute;
-	bottom: 140px;
+	bottom: 100px;
+}
+
+.load-web3-button {
+	position: absolute;
+	bottom: 150px;
 }
 
 .game-info {
@@ -160,8 +165,8 @@
 .won-game h2 {
 	font-size: 48px;
 	color: var(--color);
-	filter: drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362)
-		drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362) drop-shadow(0 0 1px #004362);
+	filter: drop-shadow(0 0 1px var(--shadow)) drop-shadow(0 0 1px var(--shadow)) drop-shadow(0 0 1px var(--shadow))
+		drop-shadow(0 0 1px var(--shadow)) drop-shadow(0 0 1px var(--shadow)) drop-shadow(0 0 1px var(--shadow));
 	letter-spacing: 1px;
 }
 
@@ -175,9 +180,10 @@
 .round-label {
 	font-size: 14px;
 	position: absolute;
-	bottom: 110px;
+	bottom: 70px;
 	color: #fff;
 	opacity: 0;
+	pointer-events: none;
 }
 
 .particle {
@@ -246,4 +252,48 @@
 
 .hint.active {
 	transform: scale(1) rotate(360deg);
+}
+
+.theme-selector {
+	flex-direction: column;
+	position: absolute;
+	top: 440px;
+
+	opacity: 0;
+	pointer-events: none;
+}
+
+.theme-selector b {
+	margin-bottom: 24px;
+}
+
+.nft {
+	/* position: absolute; */
+	width: 50px;
+	height: 50px;
+	filter: drop-shadow(0 0 5px #000);
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+}
+
+.nft:hover {
+	transform: scale(1.2);
+}
+
+.nft.active {
+	transform: scale(1.2);
+	filter: drop-shadow(0 0 15px var(--color));
+}
+
+.nft.hatchy {
+	width: 120px;
+	height: 120px;
+}
+
+.nft.chikn {
+	border-radius: 10px;
+}
+
+.nft.arcadian {
+	border-radius: 50%;
 }
